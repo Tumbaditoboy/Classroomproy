@@ -18,9 +18,9 @@ public class Ordenamientos {
     //Primer indice no necesita ser comparado
     for(int i = 1; i < arreglo.length; i++){ //1 + n + 1 + n 
       // Bucle interior: compara elementos adyacentes
-        for (int j = 0; j < arreglo.length - i; j++ ){ //1 + n + 1 + n
+        for (int j = 0; j < arreglo.length - i; j++ ){ //1 + n + 1 + n + 1
        // Compara si el elemento actual es mayor que el siguiente
-            if (arreglo[j] > arreglo[j + 1]){ // 1 + 1
+            if (arreglo[j] > arreglo[j + 1]){ // 1 
           // Se guarda el valor en la variable auxiliar
                 int auxiliar = arreglo[j];   // 1 
          // Se asigna el valor de arreglo[j+1] a arreglo[j]
