@@ -16,9 +16,9 @@ public class Ordenamientos {
     public static void burbuja(int[] arreglo){
     // Bucle exterior: realiza pasadas sobre el arreglo
     //Primer indice no necesita ser comparado
-    for(int i = 1; i < arreglo.length; i++){ //1 + n + 1 + n 
+    for(int i = 1; i < arreglo.length; i++){ //1 + n + 1 + n  =  2n + 2
       // Bucle interior: compara elementos adyacentes
-        for (int j = 0; j < arreglo.length - i; j++ ){ //1 + n + 1 + n + 1
+        for (int j = 0; j < arreglo.length - i; j++ ){ //1 + n + 1 + n + 1 = 2n + 3
        // Compara si el elemento actual es mayor que el siguiente
             if (arreglo[j] > arreglo[j + 1]){ // 1 
           // Se guarda el valor en la variable auxiliar
@@ -28,8 +28,8 @@ public class Ordenamientos {
         // Se asigna el valor de auxiliar (el antiguo arreglo[j]) a arreglo[j+1]
                 arreglo[j+1] = auxiliar;    // 1
                  }
-             }
-         } 
+             }  //O(n2)
+         }        
      }
     
 }
