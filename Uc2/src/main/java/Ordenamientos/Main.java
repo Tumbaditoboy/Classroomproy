@@ -14,10 +14,19 @@ public class Main {
         
     int [] arreglo = {7, 10, 24, 9, 3, 14, 6, 4, 2};
     Ordenamientos.burbuja(arreglo);
+    System.out.println("Ordenamiento burbuja");
     for (int a : arreglo){
         System.out.print(a + ", "); // "," para separar números de más de 1 digito
     }
+    System.out.println(" ");
     
+    int [] arregloselec = {7, 10, 24, 9, 3, 14, 6, 4, 2};
+    Ordenamientos.seleccion(arregloselec);
+    System.out.println("Ordenamiento selección");
+    for (int a : arregloselec){
+        System.out.print(a + ", "); // "," para separar números de más de 1 digito
+    }
+    System.out.println(" ");
     }
     
 }

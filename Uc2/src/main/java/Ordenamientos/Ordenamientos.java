@@ -32,4 +32,23 @@ public class Ordenamientos {
          }        
      }
     
+        public static void seleccion(int[] arreglo) {
+        int n = arreglo.length;
+
+        for (int i = 0; i < n - 1; i++) {
+            int minimo = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arreglo[j] < arreglo[minimo]) {
+                    minimo = j;
+                }
+            }
+            int temp = arreglo[i];
+            arreglo[i] = arreglo[minimo];
+            arreglo[minimo] = temp;
+        }
+    }
+    
+    
+    
+    
 }
