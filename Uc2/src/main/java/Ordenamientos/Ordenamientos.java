@@ -33,20 +33,23 @@ public class Ordenamientos {
      }
     
         public static void seleccion(int[] arreglo) {
-        int n = arreglo.length;
+        int n = arreglo.length; //1
 
-        for (int i = 0; i < n - 1; i++) {
-            int minimo = i;
-            for (int j = i + 1; j < n; j++) {
-                if (arreglo[j] < arreglo[minimo]) {
-                    minimo = j;
+        // Recorre todos los elementos menos el último
+        for (int i = 0; i < n - 1; i++) { // 1 + n + 1 + n
+            int minimo = i; // 1
+        // Busca el mínimo en la parte no ordenada
+            for (int j = i + 1; j < n; j++) { //n + 1, n + 1 + n 
+                if (arreglo[j] < arreglo[minimo]) { // 1
+                    minimo = j; // 1
                 }
             }
-            int temp = arreglo[i];
-            arreglo[i] = arreglo[minimo];
-            arreglo[minimo] = temp;
+            // Intercambia elementos si se encontró un nuevo mínimo
+            int temp = arreglo[i]; // 1
+            arreglo[i] = arreglo[minimo]; // 1
+            arreglo[minimo] = temp; // 1
         }
-    }
+    }  // 0(n^2)
     
     
     
