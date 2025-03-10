@@ -31,7 +31,10 @@ public class Ordenamientos {
              }  //O(n2)
          }        
      }
-    
+    /**
+     * Ordena de menor a mayor los elementos de un arreglo utilizando el método de selección
+     * @param arreglo el arreglo con los elementos a ordenar 
+     */
         public static void seleccion(int[] arreglo) {
         int n = arreglo.length; //1
 
