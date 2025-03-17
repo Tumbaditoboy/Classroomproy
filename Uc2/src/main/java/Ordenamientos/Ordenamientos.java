@@ -32,7 +32,8 @@ public class Ordenamientos {
              }  //O(n2)
          }        
      }
-     
+    
+    
     /**
      * Ordena de menor a mayor los elementos de un arreglo utilizando el método de selección
      * @param arreglo el arreglo con los elementos a ordenar 
@@ -59,21 +60,23 @@ public class Ordenamientos {
    
     
         public static void insertionSort(int[] arreglo) {
-        int n = arreglo.length;
-        for (int i = 1; i < n; i++) { // Se empieza desde el segundo elemento (índice 1)
-            int key = arreglo[i]; // Elemento a insertar en la parte ordenada
-            int j = i - 1;
+        int n = arreglo.length;  // 1
+        // Se empieza desde el segundo elemento (índice 1) ya que el primero se asume como ordenado
+        for (int i = 1; i < n; i++) { //1 + n + 1 + n
+             // Elemento a insertar en la parte ordenada
+            int key = arreglo[i]; //1
+            int j = i - 1; //1´+ 1
 
             // Desplaza elementos mayores que 'key' una posición a la derecha
-            while (j >= 0 && arreglo[j] > key) {
-                arreglo[j + 1] = arreglo[j];
-                j = j - 1;
+            while (j >= 0 && arreglo[j] > key) { // n + 1 + 1
+                arreglo[j + 1] = arreglo[j]; //1
+                j = j - 1; // 1 + 1 
             }
 
             // Inserta 'key' en la posición correcta
-            arreglo[j + 1] = key; 
+            arreglo[j + 1] = key; //1
         }
-    }
+    }      //O(n2)
     
     
 }
