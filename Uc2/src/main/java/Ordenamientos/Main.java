@@ -11,7 +11,7 @@ package Ordenamientos;
 public class Main {
     
     public static void main(String[] args) {
-        
+ /**       
     int [] arreglo = {7, 10, 24, 9, 3, 14, 6, 4, 2};
     Ordenamientos.burbuja(arreglo);
     System.out.println("Ordenamiento burbuja");
@@ -20,7 +20,9 @@ public class Main {
     }
     System.out.println(" ");
     
-    int [] arregloselec = {7, 10, 24, 9, 3, 14, 6, 4, 2};
+    **/ 
+ /**
+    int [] arregloselec = {10, 4, 24, 3, 8, 12};
     Ordenamientos.seleccion(arregloselec);
     System.out.println("Ordenamiento selección");
     for (int a : arregloselec){
@@ -28,6 +30,14 @@ public class Main {
     }
     System.out.println(" ");
     }
-    
+    **/
+ 
+    int [] arregloselec = {7, 10, 24, 9, 3, 12, 2};
+    Ordenamientos.insertionSort(arregloselec);
+    for (int a : arregloselec){
+        System.out.print(a + ", "); // "," para separar números de más de 1 digito
+    }
+    System.out.println(" ");   
+    }
 }
 

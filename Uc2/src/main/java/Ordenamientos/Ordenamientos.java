@@ -13,8 +13,9 @@ public class Ordenamientos {
      * Ordena de menor a mayor elementos de un arreglo utilizando el método burbuja
      * @param arreglo el arreglo con los elementos a ordenar
      */
+    
     public static void burbuja(int[] arreglo){
-    // Bucle exterior: realiza pasadas sobre el arreglo
+     //Bucle exterior: realiza pasadas sobre el arreglo
     //Primer indice no necesita ser comparado
     for(int i = 1; i < arreglo.length; i++){ //1 + n + 1 + n  =  2n + 2
       // Bucle interior: compara elementos adyacentes
@@ -31,10 +32,12 @@ public class Ordenamientos {
              }  //O(n2)
          }        
      }
+     
     /**
      * Ordena de menor a mayor los elementos de un arreglo utilizando el método de selección
      * @param arreglo el arreglo con los elementos a ordenar 
      */
+    
         public static void seleccion(int[] arreglo) {
         int n = arreglo.length; //1
 
@@ -53,8 +56,24 @@ public class Ordenamientos {
             arreglo[minimo] = temp; // 1
         }
     }  // 0(n^2)
+   
     
-    
+        public static void insertionSort(int[] arreglo) {
+        int n = arreglo.length;
+        for (int i = 1; i < n; i++) { // Se empieza desde el segundo elemento (índice 1)
+            int key = arreglo[i]; // Elemento a insertar en la parte ordenada
+            int j = i - 1;
+
+            // Desplaza elementos mayores que 'key' una posición a la derecha
+            while (j >= 0 && arreglo[j] > key) {
+                arreglo[j + 1] = arreglo[j];
+                j = j - 1;
+            }
+
+            // Inserta 'key' en la posición correcta
+            arreglo[j + 1] = key; 
+        }
+    }
     
     
 }
