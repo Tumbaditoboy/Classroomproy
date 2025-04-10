@@ -4,9 +4,12 @@
  */
 package mx.itson.classroom.ui;
 
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import mx.itson.classroom.entities.Assignment;
+import mx.itson.classroom.entities.Student;
 import mx.itson.classroom.persistence.AssignmentDAO;
 
 
@@ -22,6 +25,8 @@ public class AssignmentList extends javax.swing.JFrame {
     public AssignmentList() {
         initComponents();
     }
+    
+    private List<Assignment> assignments = new ArrayList<>();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,6 +41,8 @@ public class AssignmentList extends javax.swing.JFrame {
         tblAssignment = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -57,12 +64,26 @@ public class AssignmentList extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblAssignment);
 
-        jLabel1.setText("Asignaciones");
+        jLabel1.setText("Assignments");
 
         btnAdd.setText("Add");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -72,14 +93,17 @@ public class AssignmentList extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(54, 54, 54)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAdd)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEdit)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(65, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAdd)
-                .addGap(100, 100, 100))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,7 +111,9 @@ public class AssignmentList extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(btnAdd))
+                    .addComponent(btnAdd)
+                    .addComponent(btnEdit)
+                    .addComponent(btnDelete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -100,19 +126,48 @@ public class AssignmentList extends javax.swing.JFrame {
         AssignmentForm form = new AssignmentForm(this, true);
         form.setVisible(true);
         
-        loadAssignment();
+        loadAssignments();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        loadAssignment();
+        loadAssignments();
     }//GEN-LAST:event_formWindowOpened
 
-        private void loadAssignment(){
-        List<Assignment> assignment = AssignmentDAO.getAll();
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+      int selectedRow = tblAssignment.getSelectedRow();
+    if (selectedRow != -1) {
+        Assignment assignment = assignments.get(selectedRow); 
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this assignment?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean deleted = AssignmentDAO.delete(assignment);
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Assignment deleted correctly.");
+                loadAssignments(); 
+            } else {
+                JOptionPane.showMessageDialog(this, "It was not possible to delete the assignment.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a row to delete.");
+    }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+        private void loadAssignments(){
+        assignments = AssignmentDAO.getAll();
         DefaultTableModel modelo =(DefaultTableModel) tblAssignment.getModel();
         modelo.setRowCount(0);
         
-        for (Assignment a : assignment){
+        for (Assignment a : assignments){
             modelo.addRow(new Object[] {
                 a.getId(),
                 a.getTitle(),
@@ -164,6 +219,8 @@ public class AssignmentList extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblAssignment;

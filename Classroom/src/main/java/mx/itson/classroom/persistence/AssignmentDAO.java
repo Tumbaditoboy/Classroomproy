@@ -68,5 +68,23 @@ public class AssignmentDAO {
     return resultado;
 }
     
+    public static boolean delete(Assignment assignment) {
+    boolean resultado = false;
+
+    try {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        session.delete(assignment); // elimina el objeto
+        session.getTransaction().commit();
+
+        resultado = true;
+    } catch (Exception ex) {
+        System.err.println("Ocurrió un error al eliminar: " + ex.getMessage());
+    }
+
+    return resultado;
+}
+    
     
 }
