@@ -4,6 +4,7 @@
  */
 package mx.itson.classroom.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -21,7 +22,9 @@ public class StudentList extends javax.swing.JFrame {
      */
     public StudentList() {
         initComponents();
+        
     }
+    private List<Student> students = new ArrayList<>();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,14 +133,36 @@ public class StudentList extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        
+       int selectedRow = tblStudent.getSelectedRow();
+    if (selectedRow != -1) {
+        Student student = students.get(selectedRow); 
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this student?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean deleted = StudentDAO.delete(student);
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Student deleted correctly.");
+                loadStudents(); 
+            } else {
+                JOptionPane.showMessageDialog(this, "It was not possible to delete the student.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a row to delete.");
+    }
+ 
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnEditActionPerformed
     private void loadStudents(){
-        List<Student> students = StudentDAO.getAll();
+        students = StudentDAO.getAll();
         DefaultTableModel modelo =(DefaultTableModel) tblStudent.getModel();
         modelo.setRowCount(0);
         

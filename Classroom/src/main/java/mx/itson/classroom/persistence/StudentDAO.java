@@ -62,6 +62,25 @@ public class StudentDAO {
 
     return resultado;
 }
+    
+    public static boolean delete(Student student) {
+    boolean resultado = false;
+
+    try {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        session.delete(student); // elimina el objeto
+        session.getTransaction().commit();
+
+        resultado = true;
+    } catch (Exception ex) {
+        System.err.println("Ocurrió un error al eliminar: " + ex.getMessage());
+    }
+
+    return resultado;
+}
+
   
 
     

@@ -108,8 +108,8 @@ public class StudentForm extends javax.swing.JDialog {
         if (StudentDAO.save(s)) {
             JOptionPane.showMessageDialog(
                 this,
-                "El registro se guardó correctamente.",
-                "Registro guardado",
+                "The element was added correctly.",
+                "Element saved",
                 JOptionPane.INFORMATION_MESSAGE
             );
             dispose();
@@ -121,8 +121,8 @@ public class StudentForm extends javax.swing.JDialog {
         if (cause.getMessage() != null && cause.getMessage().contains("Duplicate entry")) {
             JOptionPane.showMessageDialog(
                 this,
-                "Ya existe un estudiante con este correo electrónico.",
-                "Correo duplicado",
+                "There is already an student with the same Email.",
+                "Duplicated Email",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
@@ -132,11 +132,11 @@ public class StudentForm extends javax.swing.JDialog {
 
     JOptionPane.showMessageDialog(
         this,
-        "El registro NO pudo ser guardado.",
-        "Error en registro",
+        "It was not possible to save the element.",
+        "Error",
         JOptionPane.ERROR_MESSAGE
     );
-    System.err.println("Error al guardar: " + ex.getMessage());
+    System.err.println("Error while saving: " + ex.getMessage());
 
 
     }
