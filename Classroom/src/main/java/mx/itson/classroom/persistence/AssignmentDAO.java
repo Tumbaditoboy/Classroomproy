@@ -35,22 +35,38 @@ public class AssignmentDAO {
     
 
     
-    
-    public static boolean save(Assignment a){
-        boolean resultado = false;
-        try{
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static boolean save(Assignment a) throws Exception {
+    boolean resultado = false;
+    Session session = null;
+
+    try {
+        session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        
-        session.save(a);
-        session.getTransaction().commit();
-        
-        resultado = a.getId() != 0;
-        }catch(Exception ex){
-            System.err.println("Ocurrió un error: " + ex.getMessage());
+
+        if (a.getId() == 0) {
+            // Si el ID es 0, significa que es un nuevo estudiante, entonces usamos save
+            session.save(a);
+        } else {
+            // Si el ID ya tiene valor, significa que es un estudiante existente, entonces usamos update
+            session.update(a);
         }
-        return resultado;
+
+        session.getTransaction().commit();
+        resultado = true;
+
+    } catch (Exception ex) {
+        if (session != null && session.getTransaction().isActive()) {
+            session.getTransaction().rollback();
+        }
+        throw ex; // Para que la excepción llegue fuera del DAO
+    } finally {
+        if (session != null) {
+            session.close();
+        }
     }
+
+    return resultado;
+}
     
     
 }

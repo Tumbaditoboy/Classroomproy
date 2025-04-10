@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -69,9 +70,9 @@ public class Assignment {
     }
 
     /**
-     * @param dueDate the dueDate to set
+     * @param due_date the dueDate to set
      */
-    public void setDue_Date(Date dueDate) {
+    public void setDue_Date(Date due_date) {
         this.due_date = due_date; 
     }
     
@@ -80,6 +81,8 @@ public class Assignment {
     private int id;
     private String title;
     private String description;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date due_date;
     
 }

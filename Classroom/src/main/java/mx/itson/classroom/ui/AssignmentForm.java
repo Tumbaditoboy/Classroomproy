@@ -4,10 +4,14 @@
  */
 package mx.itson.classroom.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import mx.itson.classroom.entities.Assignment;
 import mx.itson.classroom.persistence.AssignmentDAO;
+
+import java.text.ParseException;
+
 
 /**
  *
@@ -15,12 +19,25 @@ import mx.itson.classroom.persistence.AssignmentDAO;
  */
 public class AssignmentForm extends javax.swing.JDialog {
 
-    /**
-     * Creates new form AssignmentForm
-     */
+    private Assignment assignmentToEdit;
+
     public AssignmentForm(java.awt.Frame parent, boolean modal) {
+        this(parent, modal, null);
+    }
+
+    public AssignmentForm(java.awt.Frame parent, boolean modal, Assignment assignment) {
         super(parent, modal);
         initComponents();
+        this.assignmentToEdit = assignment;
+        fillForm();
+    }
+    
+    private void fillForm() {
+        if (assignmentToEdit != null) {
+            txtTitle.setText(assignmentToEdit.getTitle());
+            txtDescription.setText(assignmentToEdit.getDescription());
+            txtDueDate.setText(assignmentToEdit.getDue_Date().toString()); 
+        }
     }
 
     /**
@@ -40,6 +57,7 @@ public class AssignmentForm extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         txtDueDate = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -57,6 +75,8 @@ public class AssignmentForm extends javax.swing.JDialog {
                 btnSaveActionPerformed(evt);
             }
         });
+
+        jLabel5.setText("Introduce date with format: yyyy-MM-dd");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -80,7 +100,8 @@ public class AssignmentForm extends javax.swing.JDialog {
                                         .addGap(6, 6, 6)
                                         .addComponent(txtTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txtDescription))
-                                .addComponent(txtDueDate, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtDueDate, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5)))))
                 .addContainerGap(88, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -98,7 +119,9 @@ public class AssignmentForm extends javax.swing.JDialog {
                 .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(jLabel4)
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addGap(7, 7, 7)
                 .addComponent(txtDueDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnSave)
@@ -109,38 +132,43 @@ public class AssignmentForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try{
-            String title = txtTitle.getText();
-            String description = txtDescription.getText();
-   //         Date due_date = Date.parseDate(txtDueDate.getText());   PENDIENTE
+    
+    String title = txtTitle.getText();
+    String description = txtDescription.getText();
+    String dueDateStr = txtDueDate.getText();
 
-            Assignment a = new Assignment();
-            a.setTitle(title);
-            a.setDescription(description);
-       //     a.setDue_Date(due_date);
+    try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+       
+        Date dueDate = sdf.parse(dueDateStr);
 
-            AssignmentDAO.save(a);
-
-            if(AssignmentDAO.save(a)){
-                JOptionPane.showMessageDialog(
-                    this,
-                    "El registro se guardó correctamente",
-                    "Registro guardado",
-                    JOptionPane.INFORMATION_MESSAGE
-
-                );
-                dispose();
+        // Crear o actualizar el objeto Assignment
+        Assignment assignment = (assignmentToEdit != null) ? assignmentToEdit : new Assignment();
+        assignment.setTitle(title);
+        assignment.setDescription(description);
+        assignment.setDue_Date(dueDate);
+        
+        System.out.println("Saving assignment: " + assignment.getTitle() + ", " + assignment.getDescription() + ", " + assignment.getDue_Date());
+        // Guardar en base de datos
+        try {
+            if (AssignmentDAO.save(assignment)) {
+                String message = (assignmentToEdit != null)
+                        ? "The assignment was updated correctly."
+                        : "The assignment was added correctly.";
+                JOptionPane.showMessageDialog(this, message, "Assignment saved", JOptionPane.INFORMATION_MESSAGE);
+                dispose();  
             }
-
-        } catch(Exception ex){
-            JOptionPane.showMessageDialog(
-                this,
-                "El registro NO pudo ser guardado",
-                "Error en registro",
-                JOptionPane.ERROR_MESSAGE
-            );
-
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "It was not possible to save the assignment.", "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
+
+    } catch (ParseException e) {
+        JOptionPane.showMessageDialog(this, "Invalid date format. Please enter the date as yyyy-MM-dd.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+
+
     }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
@@ -192,6 +220,7 @@ public class AssignmentForm extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtDueDate;
     private javax.swing.JTextField txtTitle;

@@ -62,15 +62,15 @@ public class Student {
     /**
      * @return the idPotro
      */
-    public String getIdPotro() {
+    public String getId_Potro() {
         return id_Potro;
     }
 
     /**
      * @param idPotro the idPotro to set
      */
-    public void setIdPotro(String idPotro) {
-        this.id_Potro = idPotro;
+    public void setIdPotro(String id_Potro) {
+        this.id_Potro = id_Potro;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

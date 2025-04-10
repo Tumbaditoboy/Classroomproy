@@ -181,7 +181,7 @@ public class StudentList extends javax.swing.JFrame {
                 s.getId(),
                 s.getName(),
                 s.getEmail(),
-                s.getIdPotro()
+                s.getId_Potro()
             });
         }
     }
