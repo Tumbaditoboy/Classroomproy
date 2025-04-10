@@ -97,39 +97,51 @@ public class StudentForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try{
-        String name = txtName.getText();
-        String email = txtEmail.getText();
-        /*String id_potro = txtPotro.getText();*/
+    String name = txtName.getText();
+    String email = txtEmail.getText();
 
-            
-        Student s = new Student();
-        s.setName(name);
-        s.setEmail(email);
-       /* s.setIdPotro(id_potro);*/
-        
-       
-        
+    Student s = new Student();
+    s.setName(name);
+    s.setEmail(email);
 
-        if(StudentDAO.save(s)){
+    try {
+        if (StudentDAO.save(s)) {
             JOptionPane.showMessageDialog(
                 this,
-                "El registro se guardó correctamente",
+                "El registro se guardó correctamente.",
                 "Registro guardado",
                 JOptionPane.INFORMATION_MESSAGE
             );
             dispose();
         }
-        
-        } catch(Exception ex){
+    } catch (Exception ex) {
+    Throwable cause = ex.getCause();
+
+    while (cause != null) {
+        if (cause.getMessage() != null && cause.getMessage().contains("Duplicate entry")) {
             JOptionPane.showMessageDialog(
-            this,
-                    "El registro NO pudo ser guardado",
-                    "Error en registro",
-                    JOptionPane.ERROR_MESSAGE
+                this,
+                "Ya existe un estudiante con este correo electrónico.",
+                "Correo duplicado",
+                JOptionPane.WARNING_MESSAGE
             );
-            
+            return;
         }
+        cause = cause.getCause(); // sigue buscando la causa raíz
+    }
+
+    JOptionPane.showMessageDialog(
+        this,
+        "El registro NO pudo ser guardado.",
+        "Error en registro",
+        JOptionPane.ERROR_MESSAGE
+    );
+    System.err.println("Error al guardar: " + ex.getMessage());
+
+
+    }
+
+
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
