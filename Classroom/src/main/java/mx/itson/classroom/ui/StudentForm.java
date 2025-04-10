@@ -36,8 +36,6 @@ public class StudentForm extends javax.swing.JDialog {
         txtName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
-        Jlabeel = new javax.swing.JLabel();
-        txtPotro = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -54,8 +52,6 @@ public class StudentForm extends javax.swing.JDialog {
             }
         });
 
-        Jlabeel.setText("ID potros");
-
         btnSave.setText("Save");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,21 +64,16 @@ public class StudentForm extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtPotro, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSave)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(Jlabeel)
                         .addComponent(jLabel1)
                         .addComponent(jLabel3)
                         .addComponent(jLabel2)
                         .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                         .addComponent(txtName)))
                 .addContainerGap(78, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addGap(113, 113, 113))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,13 +88,9 @@ public class StudentForm extends javax.swing.JDialog {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(Jlabeel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtPotro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(87, 87, 87)
                 .addComponent(btnSave)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         pack();
@@ -113,23 +100,23 @@ public class StudentForm extends javax.swing.JDialog {
         try{
         String name = txtName.getText();
         String email = txtEmail.getText();
-        String id_potro = txtPotro.getText();
+        /*String id_potro = txtPotro.getText();*/
 
             
         Student s = new Student();
         s.setName(name);
         s.setEmail(email);
-        s.setIdPotro(id_potro);
+       /* s.setIdPotro(id_potro);*/
         
-        StudentDAO.save(s);
+       
         
+
         if(StudentDAO.save(s)){
             JOptionPane.showMessageDialog(
-            this,
-                    "El registro se guardó correctamente",
-                    "Registro guardado",
-                    JOptionPane.INFORMATION_MESSAGE
-                    
+                this,
+                "El registro se guardó correctamente",
+                "Registro guardado",
+                JOptionPane.INFORMATION_MESSAGE
             );
             dispose();
         }
@@ -175,6 +162,7 @@ public class StudentForm extends javax.swing.JDialog {
             java.util.logging.Logger.getLogger(StudentForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -192,13 +180,11 @@ public class StudentForm extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Jlabeel;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtName;
-    private javax.swing.JTextField txtPotro;
     // End of variables declaration//GEN-END:variables
 }

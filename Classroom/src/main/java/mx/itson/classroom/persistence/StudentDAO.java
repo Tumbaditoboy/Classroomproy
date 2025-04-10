@@ -36,19 +36,31 @@ public class StudentDAO {
     
     
     public static boolean save(Student s){
-        boolean resultado = false;
-        try{
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    boolean resultado = false;
+    Session session = null;
+    
+    try {
+        session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        
+
         session.save(s);
         session.getTransaction().commit();
         
         resultado = s.getId() != 0;
-        }catch(Exception ex){
-            System.err.println("Ocurrió un error: " + ex.getMessage());
+
+    } catch (Exception ex) {
+        System.err.println("Ocurrió un error: " + ex.getMessage());
+        if (session != null && session.getTransaction().isActive()) {
+            session.getTransaction().rollback();
         }
-        return resultado;
+    } finally {
+        if (session != null) {
+            session.close(); // Cierra la sesión siempre
+        }
     }
+
+    return resultado;
+}
+
     
 }
