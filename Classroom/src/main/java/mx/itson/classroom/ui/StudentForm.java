@@ -14,13 +14,30 @@ import mx.itson.classroom.persistence.StudentDAO;
  */
 public class StudentForm extends javax.swing.JDialog {
 
+    private Student studentToEdit;
+    
+    public StudentForm(java.awt.Frame parent, boolean modal) {
+    this(parent, modal, null);}
+
     /**
      * Creates new form StudentForm
      */
-    public StudentForm(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+    public StudentForm(java.awt.Frame parent, boolean modal, Student student) {
+    super(parent, modal);
+    initComponents();
+    
+    this.studentToEdit = student;
+    fillForm();
+}
+
+    private void fillForm() {
+    if (studentToEdit != null) {
+        txtName.setText(studentToEdit.getName());
+        txtEmail.setText(studentToEdit.getEmail());
     }
+}
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -100,46 +117,49 @@ public class StudentForm extends javax.swing.JDialog {
     String name = txtName.getText();
     String email = txtEmail.getText();
 
-    Student s = new Student();
+    // Si studentToEdit es null, estás agregando uno nuevo
+    // Si no es null, estás editando uno existente
+    Student s = (studentToEdit != null) ? studentToEdit : new Student();
+
     s.setName(name);
     s.setEmail(email);
 
     try {
         if (StudentDAO.save(s)) {
+            String message = (studentToEdit != null) ? "The student was updated correctly." : "The student was added correctly.";
             JOptionPane.showMessageDialog(
                 this,
-                "The element was added correctly.",
-                "Element saved",
+                message,
+                "Student saved",
                 JOptionPane.INFORMATION_MESSAGE
             );
-            dispose();
+            dispose(); // cerrar el formulario después de guardar
         }
     } catch (Exception ex) {
-    Throwable cause = ex.getCause();
+        Throwable cause = ex.getCause();
 
-    while (cause != null) {
-        if (cause.getMessage() != null && cause.getMessage().contains("Duplicate entry")) {
-            JOptionPane.showMessageDialog(
-                this,
-                "There is already an student with the same Email.",
-                "Duplicated Email",
-                JOptionPane.WARNING_MESSAGE
-            );
-            return;
+        while (cause != null) {
+            if (cause.getMessage() != null && cause.getMessage().contains("Duplicate entry")) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "There is already a student with the same Email.",
+                    "Duplicated Email",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            cause = cause.getCause(); // sigue buscando la causa raíz
         }
-        cause = cause.getCause(); // sigue buscando la causa raíz
+
+        JOptionPane.showMessageDialog(
+            this,
+            "It was not possible to save the student.",
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+        System.err.println("Error while saving: " + ex.getMessage());
     }
 
-    JOptionPane.showMessageDialog(
-        this,
-        "It was not possible to save the element.",
-        "Error",
-        JOptionPane.ERROR_MESSAGE
-    );
-    System.err.println("Error while saving: " + ex.getMessage());
-
-
-    }
 
 
     }//GEN-LAST:event_btnSaveActionPerformed

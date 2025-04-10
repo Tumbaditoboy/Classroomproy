@@ -43,17 +43,22 @@ public class StudentDAO {
         session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.save(s);
-        session.getTransaction().commit();
+        if (s.getId() == 0) {
+            // Si el ID es 0, significa que es un nuevo estudiante, entonces usamos save
+            session.save(s);
+        } else {
+            // Si el ID ya tiene valor, significa que es un estudiante existente, entonces usamos update
+            session.update(s);
+        }
 
-        resultado = s.getId() != 0;
+        session.getTransaction().commit();
+        resultado = true;
 
     } catch (Exception ex) {
         if (session != null && session.getTransaction().isActive()) {
             session.getTransaction().rollback();
         }
-        // Propagamos la excepción para que arriba se muestre al usuario
-        throw ex;
+        throw ex; // Para que la excepción llegue fuera del DAO
     } finally {
         if (session != null) {
             session.close();
@@ -62,6 +67,7 @@ public class StudentDAO {
 
     return resultado;
 }
+
     
     public static boolean delete(Student student) {
     boolean resultado = false;

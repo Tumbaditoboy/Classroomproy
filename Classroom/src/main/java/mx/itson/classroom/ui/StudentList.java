@@ -62,7 +62,7 @@ public class StudentList extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblStudent);
 
-        jLabel1.setText("Estudiantes de la clase");
+        jLabel1.setText("Class Students");
 
         btnAdd.setText("Add");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -95,10 +95,10 @@ public class StudentList extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(128, 128, 128)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAdd)
                         .addGap(18, 18, 18)
-                        .addComponent(btnEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEdit)
                         .addGap(18, 18, 18)
                         .addComponent(btnDelete)))
                 .addContainerGap(99, Short.MAX_VALUE))
@@ -159,7 +159,17 @@ public class StudentList extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = tblStudent.getSelectedRow();
+    if (selectedRow != -1) {
+        Student student = students.get(selectedRow);
+        StudentForm form = new StudentForm(this, true, student);
+        form.setVisible(true);
+        loadStudents(); // recarga la tabla después de editar
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a row to edit.");
+    }
+
+
     }//GEN-LAST:event_btnEditActionPerformed
     private void loadStudents(){
         students = StudentDAO.getAll();
