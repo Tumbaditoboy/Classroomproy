@@ -18,6 +18,7 @@ import javax.persistence.Id;
 @Entity
 public class Assignment {
 
+
     /**
      * @return the id
      */
