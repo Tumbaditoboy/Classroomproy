@@ -4,10 +4,16 @@
  */
 package mx.itson.classroom.ui;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import mx.itson.classroom.entities.Assignment;
 import mx.itson.classroom.entities.Student;
 import mx.itson.classroom.entities.Work;
+import mx.itson.classroom.persistence.AssignmentDAO;
 import mx.itson.classroom.persistence.StudentDAO;
 import mx.itson.classroom.persistence.WorkDAO;
 
@@ -43,7 +49,7 @@ public class WorkForm extends javax.swing.JDialog {
         fkjds = new javax.swing.JLabel();
         txtFile = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -66,10 +72,10 @@ public class WorkForm extends javax.swing.JDialog {
 
         jLabel4.setText("Assignment");
 
-        btnAdd.setText("Add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
 
@@ -78,8 +84,8 @@ public class WorkForm extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(318, Short.MAX_VALUE)
-                .addComponent(btnAdd)
+                .addContainerGap(331, Short.MAX_VALUE)
+                .addComponent(btnSave)
                 .addGap(89, 89, 89))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -105,7 +111,7 @@ public class WorkForm extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(btnAdd)
+                .addComponent(btnSave)
                 .addContainerGap(320, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -137,9 +143,41 @@ public class WorkForm extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowOpened
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+ String title = txtTitle.getText();
+    String description = txtDescription.getText();
+    String dueDateStr = txtDueDate.getText();
 
-    }//GEN-LAST:event_btnAddActionPerformed
+    try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+       
+        Date dueDate = sdf.parse(dueDateStr);
+
+        // Crear o actualizar el objeto Assignment
+        Assignment assignment = (assignmentToEdit != null) ? assignmentToEdit : new Assignment();
+        assignment.setTitle(title);
+        assignment.setDescription(description);
+        assignment.setDue_Date(dueDate);
+        
+        System.out.println("Saving assignment: " + assignment.getTitle() + ", " + assignment.getDescription() + ", " + assignment.getDue_Date());
+        // Guardar en base de datos
+        try {
+            if (AssignmentDAO.save(assignment)) {
+                String message = (assignmentToEdit != null)
+                        ? "The assignment was updated correctly."
+                        : "The assignment was added correctly.";
+                JOptionPane.showMessageDialog(this, message, "Assignment saved", JOptionPane.INFORMATION_MESSAGE);
+                dispose();  
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "It was not possible to save the assignment.", "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+
+    } catch (ParseException e) {
+        JOptionPane.showMessageDialog(this, "Invalid date format. Please enter the date as yyyy-MM-dd.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     
     
@@ -188,7 +226,7 @@ public class WorkForm extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnSave;
     private javax.swing.JLabel fkjds;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;

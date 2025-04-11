@@ -4,12 +4,17 @@
  */
 package mx.itson.classroom.ui;
 
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import mx.itson.classroom.entities.Assignment;
+import mx.itson.classroom.entities.Student;
 import mx.itson.classroom.entities.Work;
 import mx.itson.classroom.persistence.AssignmentDAO;
+import mx.itson.classroom.persistence.StudentDAO;
 import mx.itson.classroom.persistence.WorkDAO;
+import mx.itson.classroom.entities.Work;
 
 /**
  *
@@ -23,6 +28,8 @@ public class WorkList extends javax.swing.JFrame {
     public WorkList() {
         initComponents();
     }
+    
+       private List<Work> works = new ArrayList<>();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,6 +45,8 @@ public class WorkList extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblWork = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -68,22 +77,43 @@ public class WorkList extends javax.swing.JFrame {
             }
         });
 
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1)
-                .addGap(51, 51, 51))
             .addGroup(layout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addGap(73, 73, 73))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(51, 51, 51))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDelete)
+                        .addGap(67, 67, 67))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,8 +128,12 @@ public class WorkList extends javax.swing.JFrame {
                             .addComponent(jLabel6)
                             .addComponent(btnAdd))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnEdit)
+                            .addComponent(btnDelete))))
+                .addContainerGap(237, Short.MAX_VALUE))
         );
 
         pack();
@@ -115,6 +149,43 @@ public class WorkList extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         loadWork();
     }//GEN-LAST:event_formWindowOpened
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+         int selectedRow = tblWork.getSelectedRow();
+    if (selectedRow != -1) {
+        Work work = works.get(selectedRow);
+        WorkForm form = new WorkForm(this, true, work);
+        form.setVisible(true);
+        loadWork(); // recarga la tabla después de editar
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a row to edit.");
+    }
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+              int selectedRow = tblWork.getSelectedRow();
+    if (selectedRow != -1) {
+        Work work = works.get(selectedRow); 
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this student?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean deleted = WorkDAO.delete(work);
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Student deleted correctly.");
+                loadWork(); 
+            } else {
+                JOptionPane.showMessageDialog(this, "It was not possible to delete the student.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a row to delete.");
+    }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
         private void loadWork(){
         List<Work> work = WorkDAO.getAll();
@@ -169,6 +240,8 @@ public class WorkList extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;

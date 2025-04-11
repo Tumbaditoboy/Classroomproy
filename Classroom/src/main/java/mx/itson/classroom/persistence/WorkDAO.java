@@ -52,5 +52,23 @@ public class WorkDAO {
         return resultado;
     } 
     
+        public static boolean delete(Work work) {
+    boolean resultado = false;
+
+    try {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        session.delete(work); // elimina el objeto
+        session.getTransaction().commit();
+
+        resultado = true;
+    } catch (Exception ex) {
+        System.err.println("Ocurrió un error al eliminar: " + ex.getMessage());
+    }
+
+    return resultado;
+}
+    
     
 }
