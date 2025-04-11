@@ -4,10 +4,12 @@
  */
 package mx.itson.classroom.ui;
 
+import java.awt.Frame;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import mx.itson.classroom.entities.Assignment;
@@ -22,14 +24,64 @@ import mx.itson.classroom.persistence.WorkDAO;
  * @author dzlan
  */
 public class WorkForm extends javax.swing.JDialog {
+public WorkForm(Frame parent, boolean modal) {
+    super(parent, modal);
+    initComponents();
 
-    /**
-     * Creates new form WorkForm
-     */
-    public WorkForm(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+
+    
+    cmbAssignment.setModel(new javax.swing.DefaultComboBoxModel());
+    cmbStudent.setModel(new javax.swing.DefaultComboBoxModel());
+
+    // Llenar los JComboBox con cadenas en formato "ID - Texto"
+    try {
+        List assignments = AssignmentDAO.getAll();
+        cmbAssignment.removeAllItems();
+        for (int i = 0; i < assignments.size(); i++) {
+            Assignment assignment = (Assignment) assignments.get(i);
+            // Agregamos el String con ID y título, por ejemplo: "1 - Matemáticas"
+            cmbAssignment.addItem(assignment.getId() + " - " + assignment.getTitle());
+        }
+
+        List students = StudentDAO.getAll();
+        cmbStudent.removeAllItems();
+        for (int i = 0; i < students.size(); i++) {
+            Student student = (Student) students.get(i);
+            // Agregamos el String con ID y nombre
+            cmbStudent.addItem(student.getId() + " - " + student.getName());
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error loading data: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+
+  
+    if (workToEdit != null) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        txtDate.setText(sdf.format(workToEdit.getDate()));
+        txtFile.setText(workToEdit.getFile_Name());
+
+        // Selecciona el item correcto en cmbAssignment
+        String assignmentIdStr = String.valueOf(workToEdit.getId_Assignment());
+        for (int i = 0; i < cmbAssignment.getItemCount(); i++) {
+            String item = cmbAssignment.getItemAt(i).toString();
+            if (item.startsWith(assignmentIdStr + " -")) {
+                cmbAssignment.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        // Selecciona el item correcto en cmbStudent
+        String studentIdStr = String.valueOf(workToEdit.getId_Student());
+        for (int i = 0; i < cmbStudent.getItemCount(); i++) {
+            String item = cmbStudent.getItemAt(i).toString();
+            if (item.startsWith(studentIdStr + " -")) {
+                cmbStudent.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,9 +94,9 @@ public class WorkForm extends javax.swing.JDialog {
 
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cmbAssignment = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        cmbStudent = new javax.swing.JComboBox<>();
         txtDate = new javax.swing.JTextField();
         fkjds = new javax.swing.JLabel();
         txtFile = new javax.swing.JTextField();
@@ -62,11 +114,22 @@ public class WorkForm extends javax.swing.JDialog {
 
         jLabel1.setText("Work");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbAssignment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbAssignment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbAssignmentActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("date");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbStudent.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        txtDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDateActionPerformed(evt);
+            }
+        });
 
         fkjds.setText("File name");
 
@@ -95,7 +158,7 @@ public class WorkForm extends javax.swing.JDialog {
                         .addComponent(jLabel2)
                         .addComponent(jLabel1)
                         .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtFile, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4)
                         .addGroup(layout.createSequentialGroup()
@@ -104,7 +167,7 @@ public class WorkForm extends javax.swing.JDialog {
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(jLabel5)
                                     .addGap(346, 346, 346))
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cmbAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addContainerGap(43, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -128,11 +191,11 @@ public class WorkForm extends javax.swing.JDialog {
                     .addGap(23, 23, 23)
                     .addComponent(jLabel4)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(56, 56, 56)
                     .addComponent(jLabel5)
                     .addGap(18, 18, 18)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
@@ -140,44 +203,76 @@ public class WorkForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_formWindowOpened
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
- String title = txtTitle.getText();
-    String description = txtDescription.getText();
-    String dueDateStr = txtDueDate.getText();
+    String dueDateStr = txtDate.getText().trim();
+    String fileName = txtFile.getText().trim();
+
+    if (dueDateStr.equals("") || fileName.equals("")) {
+        JOptionPane.showMessageDialog(this, "All fields are required.", 
+                "Validation Error", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    if (!dueDateStr.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd.", 
+                "Validation Error", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
     try {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-       
         Date dueDate = sdf.parse(dueDateStr);
 
-        // Crear o actualizar el objeto Assignment
-        Assignment assignment = (assignmentToEdit != null) ? assignmentToEdit : new Assignment();
-        assignment.setTitle(title);
-        assignment.setDescription(description);
-        assignment.setDue_Date(dueDate);
-        
-        System.out.println("Saving assignment: " + assignment.getTitle() + ", " + assignment.getDescription() + ", " + assignment.getDue_Date());
-        // Guardar en base de datos
-        try {
-            if (AssignmentDAO.save(assignment)) {
-                String message = (assignmentToEdit != null)
-                        ? "The assignment was updated correctly."
-                        : "The assignment was added correctly.";
-                JOptionPane.showMessageDialog(this, message, "Assignment saved", JOptionPane.INFORMATION_MESSAGE);
-                dispose();  
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "It was not possible to save the assignment.", "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        }
+        // Obtener el ID del Assignment a partir del String (formato "ID - Título")
+        String selectedAssignmentStr = cmbAssignment.getSelectedItem().toString();
+        int assignmentId = Integer.parseInt(selectedAssignmentStr.split(" - ")[0]);
 
+        // Obtener el ID del Student a partir del String (formato "ID - Nombre")
+        String selectedStudentStr = cmbStudent.getSelectedItem().toString();
+        int studentId = Integer.parseInt(selectedStudentStr.split(" - ")[0]);
+
+        Work work = (workToEdit != null) ? workToEdit : new Work();
+        work.setDate(dueDate);
+        work.setFile_Name(fileName);
+        work.setId_Assignment(assignmentId);
+        work.setId_Student(studentId);
+
+        if (WorkDAO.save(work)) {
+            String message = (workToEdit != null)
+                    ? "The work was updated successfully."
+                    : "The work was added successfully.";
+            JOptionPane.showMessageDialog(this, message, "Work Saved", JOptionPane.INFORMATION_MESSAGE);
+            dispose(); // Cierra el formulario
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to save the work.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     } catch (ParseException e) {
-        JOptionPane.showMessageDialog(this, "Invalid date format. Please enter the date as yyyy-MM-dd.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "An error occurred while saving the work: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+
+
+    
+
+
+    
+
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void txtDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDateActionPerformed
+
+    private void cmbAssignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbAssignmentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbAssignmentActionPerformed
 
     
     
@@ -213,7 +308,7 @@ public class WorkForm extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                WorkForm dialog = new WorkForm(new javax.swing.JFrame(), true);
+                WorkForm dialog = new WorkForm(null, true); // Usar 'null' como el Frame padre si no hay uno
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -227,9 +322,9 @@ public class WorkForm extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbAssignment;
+    private javax.swing.JComboBox<String> cmbStudent;
     private javax.swing.JLabel fkjds;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -237,4 +332,5 @@ public class WorkForm extends javax.swing.JDialog {
     private javax.swing.JTextField txtDate;
     private javax.swing.JTextField txtFile;
     // End of variables declaration//GEN-END:variables
+
 }

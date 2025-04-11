@@ -94,5 +94,9 @@ public class Work {
     private String file_Name;
     private int id_Assignment;
     private int id_Student;
+
+    public Object getAssignment() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
             
 }

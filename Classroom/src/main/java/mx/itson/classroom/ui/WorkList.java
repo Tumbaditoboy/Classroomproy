@@ -22,14 +22,40 @@ import mx.itson.classroom.entities.Work;
  */
 public class WorkList extends javax.swing.JFrame {
 
-    /**
-     * Creates new form WorkList
-     */
+
+    private List<Work> works = new ArrayList<>(); 
+
     public WorkList() {
         initComponents();
+        loadWork(); 
     }
+
+  
+    private void loadWork() {
+        try {
+            works = WorkDAO.getAll(); 
+            DefaultTableModel modelo = (DefaultTableModel) tblWork.getModel();
+            modelo.setRowCount(0);
+
+            for (Work w : works) {
+                modelo.addRow(new Object[] {
+                    w.getId(),
+                    w.getDate(),
+                    w.getFile_Name(),
+                    w.getId_Assignment(),
+                    w.getId_Student()
+                });
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error loading works: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
     
-       private List<Work> works = new ArrayList<>();
+
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -140,68 +166,67 @@ public class WorkList extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        WorkForm form = new WorkForm(this, true);
+     
+        WorkForm form = new WorkForm(this, true); 
         form.setVisible(true);
+        loadWork(); 
+    
 
-        loadWork();
+
+
+
+
+
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        loadWork();
+    loadWork();
     }//GEN-LAST:event_formWindowOpened
 
+
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-         int selectedRow = tblWork.getSelectedRow();
-    if (selectedRow != -1) {
-        Work work = works.get(selectedRow);
-        WorkForm form = new WorkForm(this, true, work);
-        form.setVisible(true);
-        loadWork(); // recarga la tabla después de editar
-    } else {
-        JOptionPane.showMessageDialog(this, "Select a row to edit.");
-    }
+
+        int selectedRow = tblWork.getSelectedRow();
+        if (selectedRow != -1) {
+            Work work = works.get(selectedRow); 
+            WorkForm form = new WorkForm(this, true); 
+            form.setVisible(true);
+            loadWork(); // Recargar tabla
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a row to edit.", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    
+
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-              int selectedRow = tblWork.getSelectedRow();
-    if (selectedRow != -1) {
-        Work work = works.get(selectedRow); 
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to delete this student?",
-            "Confirmation",
-            JOptionPane.YES_NO_OPTION
-        );
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean deleted = WorkDAO.delete(work);
-            if (deleted) {
-                JOptionPane.showMessageDialog(this, "Student deleted correctly.");
-                loadWork(); 
-            } else {
-                JOptionPane.showMessageDialog(this, "It was not possible to delete the student.", "Error", JOptionPane.ERROR_MESSAGE);
+        int selectedRow = tblWork.getSelectedRow();
+        if (selectedRow != -1) {
+            Work work = works.get(selectedRow);
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this work?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (WorkDAO.delete(work)) {
+                    JOptionPane.showMessageDialog(this, "Work deleted successfully.");
+                    loadWork();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete the work.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a row to delete.", "Warning", JOptionPane.WARNING_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Select a row to delete.");
-    }
+    
+      
+
+
+
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-        private void loadWork(){
-        List<Work> work = WorkDAO.getAll();
-        DefaultTableModel modelo =(DefaultTableModel) tblWork.getModel();
-        modelo.setRowCount(0);
-        
-        for (Work w : work){
-            modelo.addRow(new Object[] {
-                w.getId(),
-                w.getDate(),
-                w.getFile_Name(),
-                w.getId_Assignment(),
-                w.getId_Student()
-            });
-        }
-    }
+      
+
     /**
      * @param args the command line arguments
      */
