@@ -82,6 +82,7 @@ public class WorkList extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Yu Gothic UI", 1, 18)); // NOI18N
         jLabel6.setText("Work");
 
         tblWork.setModel(new javax.swing.table.DefaultTableModel(
@@ -97,6 +98,7 @@ public class WorkList extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblWork);
 
+        btnAdd.setBackground(new java.awt.Color(153, 255, 204));
         btnAdd.setText("Add");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,6 +106,7 @@ public class WorkList extends javax.swing.JFrame {
             }
         });
 
+        btnEdit.setBackground(new java.awt.Color(153, 204, 255));
         btnEdit.setText("Edit");
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -111,6 +114,7 @@ public class WorkList extends javax.swing.JFrame {
             }
         });
 
+        btnDelete.setBackground(new java.awt.Color(255, 153, 153));
         btnDelete.setText("Delete");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,7 +155,7 @@ public class WorkList extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(100, 100, 100)
                 .addComponent(jLabel3)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addContainerGap(233, Short.MAX_VALUE))
         );
 
         pack();
