@@ -248,6 +248,13 @@ public class WorkForm extends javax.swing.JDialog {
     // Obtener objetos desde la BD
     Assignment assignment = AssignmentDAO.getById(assignmentId);
     Student student = StudentDAO.getById(studentId);
+    
+    // Verificar si la fecha de entrega es posterior a la fecha límite de la asignación
+    if (dueDate.after(assignment.getDue_Date())) {
+        JOptionPane.showMessageDialog(this, "The work cannot be submitted after the due date.", 
+                "Late Submission Error", JOptionPane.ERROR_MESSAGE);
+        return; // No guardar el trabajo si es una entrega tardía
+    }
 
     // Crear o actualizar
     Work work = (workToEdit != null) ? workToEdit : new Work();
@@ -255,6 +262,7 @@ public class WorkForm extends javax.swing.JDialog {
     work.setFile_Name(fileName);
     work.setAssignment(assignment);
     work.setStudent(student);
+    
 
     if (WorkDAO.save(work)) {
         String message = (workToEdit != null)
