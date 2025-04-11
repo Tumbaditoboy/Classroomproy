@@ -134,7 +134,15 @@ public class AssignmentList extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
+    int selectedRow = tblAssignment.getSelectedRow();
+    if (selectedRow != -1) {
+        Assignment assignment = assignments.get(selectedRow);
+        AssignmentForm form = new AssignmentForm(this, true, assignment);
+        form.setVisible(true);
+        loadAssignments(); // recarga la tabla después de editar
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a row to edit.");
+    }
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
