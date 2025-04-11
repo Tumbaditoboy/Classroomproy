@@ -42,8 +42,8 @@ public class WorkList extends javax.swing.JFrame {
                     w.getId(),
                     w.getDate(),
                     w.getFile_Name(),
-                    w.getId_Assignment(),
-                    w.getId_Student()
+                    w.getAssignment().getTitle(),
+                    w.getStudent().getName()
                 });
             }
         } catch (Exception ex) {
@@ -91,7 +91,7 @@ public class WorkList extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Date", "File name", "Id assignment", "Id student"
+                "Id", "Date", "File name", "Assignment", "Student"
             }
         ));
         jScrollPane1.setViewportView(tblWork);
@@ -171,12 +171,6 @@ public class WorkList extends javax.swing.JFrame {
         form.setVisible(true);
         loadWork(); 
     
-
-
-
-
-
-
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -189,7 +183,7 @@ public class WorkList extends javax.swing.JFrame {
         int selectedRow = tblWork.getSelectedRow();
         if (selectedRow != -1) {
             Work work = works.get(selectedRow); 
-            WorkForm form = new WorkForm(this, true); 
+            WorkForm form = new WorkForm(this, true, work); 
             form.setVisible(true);
             loadWork(); // Recargar tabla
         } else {

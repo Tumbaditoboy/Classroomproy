@@ -4,6 +4,9 @@
  */
 package mx.itson.classroom.persistence;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
@@ -85,6 +88,14 @@ public class AssignmentDAO {
 
     return resultado;
 }
+    
+    public static Assignment getById(int id) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Assignment a = session.get(Assignment.class, id);
+    session.close();
+    return a;
+}
+
     
     
 }

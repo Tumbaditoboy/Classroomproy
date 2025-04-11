@@ -24,12 +24,19 @@ import mx.itson.classroom.persistence.WorkDAO;
  * @author dzlan
  */
 public class WorkForm extends javax.swing.JDialog {
-public WorkForm(Frame parent, boolean modal) {
+    
+    private Work workToEdit;
+            
+    public WorkForm(java.awt.Frame parent, boolean modal) {
+    this(parent, modal, null);}
+    
+    public WorkForm(java.awt.Frame parent, boolean modal, Work work) {
     super(parent, modal);
     initComponents();
-
-
     
+    this.workToEdit = work;
+    fillForm();
+     
     cmbAssignment.setModel(new javax.swing.DefaultComboBoxModel());
     cmbStudent.setModel(new javax.swing.DefaultComboBoxModel());
 
@@ -54,15 +61,17 @@ public WorkForm(Frame parent, boolean modal) {
         JOptionPane.showMessageDialog(this, "Error loading data: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
-
-  
+}
+    
+    /*Codigo para llenar el form con los valores que tiene un elemento en caso de querer editar */
+    private void fillForm() {
     if (workToEdit != null) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         txtDate.setText(sdf.format(workToEdit.getDate()));
         txtFile.setText(workToEdit.getFile_Name());
 
         // Selecciona el item correcto en cmbAssignment
-        String assignmentIdStr = String.valueOf(workToEdit.getId_Assignment());
+        String assignmentIdStr = String.valueOf(workToEdit.getAssignment().getId());
         for (int i = 0; i < cmbAssignment.getItemCount(); i++) {
             String item = cmbAssignment.getItemAt(i).toString();
             if (item.startsWith(assignmentIdStr + " -")) {
@@ -72,7 +81,7 @@ public WorkForm(Frame parent, boolean modal) {
         }
 
         // Selecciona el item correcto en cmbStudent
-        String studentIdStr = String.valueOf(workToEdit.getId_Student());
+        String studentIdStr = String.valueOf(workToEdit.getStudent().getId());
         for (int i = 0; i < cmbStudent.getItemCount(); i++) {
             String item = cmbStudent.getItemAt(i).toString();
             if (item.startsWith(studentIdStr + " -")) {
@@ -82,6 +91,9 @@ public WorkForm(Frame parent, boolean modal) {
         }
     }
 }
+    
+    
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -150,6 +162,15 @@ public WorkForm(Frame parent, boolean modal) {
                 .addContainerGap(331, Short.MAX_VALUE)
                 .addComponent(btnSave)
                 .addGap(89, 89, 89))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel5)
+                        .addComponent(cmbStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(43, 43, 43)
@@ -158,16 +179,7 @@ public WorkForm(Frame parent, boolean modal) {
                         .addComponent(jLabel2)
                         .addComponent(jLabel1)
                         .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cmbStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtFile, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(6, 6, 6)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addGap(346, 346, 346))
-                                .addComponent(cmbAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(txtFile, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addContainerGap(43, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -175,7 +187,15 @@ public WorkForm(Frame parent, boolean modal) {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(btnSave)
-                .addContainerGap(320, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(cmbAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addComponent(cmbStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(4, 4, 4)
@@ -188,15 +208,7 @@ public WorkForm(Frame parent, boolean modal) {
                     .addComponent(fkjds)
                     .addGap(18, 18, 18)
                     .addComponent(txtFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(23, 23, 23)
-                    .addComponent(jLabel4)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(cmbAssignment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(56, 56, 56)
-                    .addComponent(jLabel5)
-                    .addGap(18, 18, 18)
-                    .addComponent(cmbStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addContainerGap(202, Short.MAX_VALUE)))
         );
 
         pack();
@@ -223,32 +235,36 @@ public WorkForm(Frame parent, boolean modal) {
     }
 
     try {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date dueDate = sdf.parse(dueDateStr);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    Date dueDate = sdf.parse(dueDateStr);
 
-        // Obtener el ID del Assignment a partir del String (formato "ID - Título")
-        String selectedAssignmentStr = cmbAssignment.getSelectedItem().toString();
-        int assignmentId = Integer.parseInt(selectedAssignmentStr.split(" - ")[0]);
+    // Obtener IDs
+    String selectedAssignmentStr = cmbAssignment.getSelectedItem().toString();
+    int assignmentId = Integer.parseInt(selectedAssignmentStr.split(" - ")[0]);
 
-        // Obtener el ID del Student a partir del String (formato "ID - Nombre")
-        String selectedStudentStr = cmbStudent.getSelectedItem().toString();
-        int studentId = Integer.parseInt(selectedStudentStr.split(" - ")[0]);
+    String selectedStudentStr = cmbStudent.getSelectedItem().toString();
+    int studentId = Integer.parseInt(selectedStudentStr.split(" - ")[0]);
 
-        Work work = (workToEdit != null) ? workToEdit : new Work();
-        work.setDate(dueDate);
-        work.setFile_Name(fileName);
-        work.setId_Assignment(assignmentId);
-        work.setId_Student(studentId);
+    // Obtener objetos desde la BD
+    Assignment assignment = AssignmentDAO.getById(assignmentId);
+    Student student = StudentDAO.getById(studentId);
 
-        if (WorkDAO.save(work)) {
-            String message = (workToEdit != null)
-                    ? "The work was updated successfully."
-                    : "The work was added successfully.";
-            JOptionPane.showMessageDialog(this, message, "Work Saved", JOptionPane.INFORMATION_MESSAGE);
-            dispose(); // Cierra el formulario
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to save the work.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+    // Crear o actualizar
+    Work work = (workToEdit != null) ? workToEdit : new Work();
+    work.setDate(dueDate);
+    work.setFile_Name(fileName);
+    work.setAssignment(assignment);
+    work.setStudent(student);
+
+    if (WorkDAO.save(work)) {
+        String message = (workToEdit != null)
+                ? "The work was updated successfully."
+                : "The work was added successfully.";
+        JOptionPane.showMessageDialog(this, message, "Work Saved", JOptionPane.INFORMATION_MESSAGE);
+        dispose(); // Cierra el formulario
+    } else {
+        JOptionPane.showMessageDialog(this, "Failed to save the work.",
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
     } catch (ParseException e) {
         JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd.",
@@ -257,6 +273,7 @@ public WorkForm(Frame parent, boolean modal) {
         JOptionPane.showMessageDialog(this, "An error occurred while saving the work: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
+
 
 
     

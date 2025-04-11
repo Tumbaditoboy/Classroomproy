@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -17,6 +19,34 @@ import javax.persistence.Id;
 
 @Entity
 public class Work {
+
+    /**
+     * @param assignment the assignment to set
+     */
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
+    }
+
+    /**
+     * @return the assignment
+     */
+    public Assignment getAssignment() {
+        return assignment;
+    }
+
+    /**
+     * @param student the student to set
+     */
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+    
+    /**
+     * @return the student
+     */
+    public Student getStudent() {
+        return student;
+    }
 
     /**
      * @return the id
@@ -54,49 +84,27 @@ public class Work {
     }
 
     /**
-     * @param fileName the fileName to set
+     * @param file_Name the fileName to set
      */
     public void setFile_Name(String file_Name) {
         this.file_Name = file_Name;
     }
 
-    /**
-     * @return the idAssignment
-     */
-    public int getId_Assignment() {
-        return id_Assignment;
-    }
 
-    /**
-     * @param id_Assignment the idAssignment to set
-     */
-    public void setId_Assignment(int id_Assignment) {
-        this.id_Assignment = id_Assignment;
-    }
-
-    /**
-     * @return the idStudent
-     */
-    public int getId_Student() {
-        return id_Student;
-    }
-
-    /**
-     * @param id_Student the idStudent to set
-     */
-    public void setId_Student(int id_Student) {
-        this.id_Student = id_Student;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)    
     private int id;
     private Date date;
     private String file_Name;
-    private int id_Assignment;
-    private int id_Student;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_assignment")
+    private Assignment assignment;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_student")
+    private Student student;
 
-    public Object getAssignment() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
             
 }

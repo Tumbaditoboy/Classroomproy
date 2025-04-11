@@ -86,6 +86,13 @@ public class StudentDAO {
 
     return resultado;
 }
+    
+    public static Student getById(int id) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Student s = session.get(Student.class, id);
+    session.close();
+    return s;
+}
 
   
 
