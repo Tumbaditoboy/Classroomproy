@@ -18,7 +18,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/XML/XMLDocument.xml to edit this 
             com.mysql.cj.jdbc.Driver
         </property>
         <property name="hibernate.connection.url">
-            jdbc:mysql://localhost:3306/classrooms_have_arrivesh?useSSL=false&amp;serverTimezone=UTC
+            jdbc:mysql://localhost:3306/cita_medica?useSSL=false&amp;serverTimezone=UTC
         </property>
         <property name="hibernate.connection.username">
             root
@@ -27,9 +27,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/XML/XMLDocument.xml to edit this 
             Admin
         </property>
          
-      <mapping class="mx.itson.classroom.entities.Assignment"/>
-      <mapping class="mx.itson.classroom.entities.Student"/> 
-      <mapping class="mx.itson.classroom.entities.Work"/>     
+      <mapping class="mx.itson.citamedica.entities.Cita"/>
+      <mapping class="mx.itson.citamedica.entities.Especialidad"/>
+      <mapping class="mx.itson.citamedica.entities.Medico"/>
+      <mapping class="mx.itson.citamedica.entities.Medico_especialidad"/>
+      <mapping class="mx.itson.citamedica.entities.Paciente"/>   
     </session-factory>
 </hibernate-configuration>
 

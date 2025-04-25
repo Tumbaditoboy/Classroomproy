@@ -4,6 +4,7 @@
  */
 package mx.itson.citamedica.entities;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
  *
  * @author Akane
  */
+@Entity
 public class Medico_especialidad {
 
     /**
