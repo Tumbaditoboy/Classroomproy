@@ -4,6 +4,16 @@
  */
 package mx.itson.citamedica.ui;
 
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import mx.itson.citamedica.entities.Especialidad;
+import mx.itson.citamedica.entities.Medico;
+import mx.itson.citamedica.entities.Paciente;
+import mx.itson.citamedica.persistence.EspecialidadDAO;
+import mx.itson.citamedica.persistence.Medico_especialidadDAO;
+import mx.itson.citamedica.persistence.PacienteDAO;
+
 /**
  *
  * @author Akane
@@ -16,6 +26,46 @@ public class CitaForm extends javax.swing.JDialog {
     public CitaForm(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+    cmbPaciente.setModel(new javax.swing.DefaultComboBoxModel());
+
+    
+    // Llenar los JComboBox con cadenas en formato "ID - Texto"
+    try {
+        List pacientes = PacienteDAO.getAll();
+        cmbPaciente.removeAllItems();
+        for (int i = 0; i < pacientes.size(); i++) {
+            Paciente paciente = (Paciente) pacientes.get(i);
+            // Agregamos el String con ID y título, por ejemplo: "1 - Matemáticas"
+            cmbPaciente.addItem(paciente.getId() + " - " + paciente.getNombre());
+        }
+
+        List especialidades = EspecialidadDAO.getAll();
+        cmbEspecialidad.removeAllItems();
+        for (int i = 0; i < especialidades.size(); i++) {
+            Especialidad especialidad = (Especialidad) especialidades.get(i);
+            // Agregamos el String con ID y nombre
+            cmbEspecialidad.addItem(especialidad);
+        }
+        
+        
+        cmbEspecialidad.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        Especialidad especialidadSeleccionada = (Especialidad) cmbEspecialidad.getSelectedItem();
+        if (especialidadSeleccionada != null) {
+            List<Medico> medicos = Medico_especialidadDAO.obtenerMedicosPorEspecialidad(especialidadSeleccionada.getId());
+            DefaultComboBoxModel<Medico> modeloMedico = new DefaultComboBoxModel<>();
+            for (Medico m : medicos) {
+                modeloMedico.addElement(m);
+            }
+            cmbMedico.setModel(modeloMedico);
+        }
+    }
+});
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error loading data: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }
 
     /**
@@ -38,16 +88,12 @@ public class CitaForm extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        cmbPaciente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbPaciente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbPacienteActionPerformed(evt);
             }
         });
 
-        cmbMedico.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        cmbEspecialidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbEspecialidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbEspecialidadActionPerformed(evt);
@@ -76,20 +122,25 @@ public class CitaForm extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnAceptar)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel1)
-                                .addComponent(jLabel2)
-                                .addComponent(cmbMedico, 0, 140, Short.MAX_VALUE)
-                                .addComponent(cmbPaciente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3)))))
-                .addContainerGap(95, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(cmbPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(332, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAceptar)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel2)
+                        .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(66, 66, 66))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,12 +153,12 @@ public class CitaForm extends javax.swing.JDialog {
                     .addComponent(btnAceptar))
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addContainerGap(144, Short.MAX_VALUE))
@@ -172,8 +223,8 @@ public class CitaForm extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
-    private javax.swing.JComboBox<String> cmbEspecialidad;
-    private javax.swing.JComboBox<String> cmbMedico;
+    private javax.swing.JComboBox<Especialidad> cmbEspecialidad;
+    private javax.swing.JComboBox<Medico> cmbMedico;
     private javax.swing.JComboBox<String> cmbPaciente;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

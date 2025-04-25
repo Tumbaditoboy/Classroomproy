@@ -7,6 +7,7 @@ package mx.itson.citamedica.persistence;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
+import mx.itson.citamedica.entities.Medico;
 import mx.itson.citamedica.entities.Medico_especialidad;
 import mx.itson.citamedica.utils.HibernateUtil;
 import org.hibernate.Session;
@@ -31,5 +32,34 @@ public class Medico_especialidadDAO {
         }
         return medicoEspecialidadLista;
     }
+    
+    public static int cola (){
+        return 1;
+    }
+    
+    public static List<Medico> obtenerMedicosPorEspecialidad(int idEspecialidad) {
+    List<Medico> medicos = new ArrayList<>();
+    try {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        List<Medico_especialidad> relaciones = session.createQuery(
+            "FROM Medico_especialidad me WHERE me.especialidad.id = :idEspecialidad", Medico_especialidad.class)
+            .setParameter("idEspecialidad", idEspecialidad)
+            .getResultList();
+
+        for (Medico_especialidad me : relaciones) {
+            medicos.add(me.getMedico());
+        }
+
+        session.getTransaction().commit();
+        session.close();
+    } catch (Exception ex) {
+        System.err.println("Error al obtener médicos por especialidad: " + ex.getMessage());
+    }
+
+    return medicos;
+}
+
     
 }

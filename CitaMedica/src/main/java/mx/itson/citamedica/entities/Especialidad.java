@@ -48,4 +48,9 @@ public class Especialidad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nombre;
+    
+    @Override
+    public String toString() {
+    return this.nombre;
+}
 }
