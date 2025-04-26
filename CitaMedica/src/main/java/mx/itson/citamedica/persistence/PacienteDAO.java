@@ -32,4 +32,11 @@ public class PacienteDAO {
         return pacientes;
     }
     
+    public static Paciente getById(int id) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Paciente p = session.get(Paciente.class, id);
+    session.close();
+    return p;
+}
+    
 }

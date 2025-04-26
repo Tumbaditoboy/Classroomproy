@@ -32,4 +32,36 @@ public class CitaDAO {
         return citas;
     }
     
+    public static boolean save(Cita c) throws Exception {
+    boolean resultado = false;
+    Session session = null;
+
+    try {
+        session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        if (c.getId() == 0) {
+            
+            session.save(c);
+        } else {
+            
+            session.update(c);
+        }
+
+        session.getTransaction().commit();
+        resultado = true;
+
+    } catch (Exception ex) {
+        if (session != null && session.getTransaction().isActive()) {
+            session.getTransaction().rollback();
+        }
+        throw ex; // Para que la excepción llegue fuera del DAO
+    } finally {
+        if (session != null) {
+            session.close();
+        }
+    }
+
+    return resultado;
+}
 }

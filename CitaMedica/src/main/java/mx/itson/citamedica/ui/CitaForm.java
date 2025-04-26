@@ -7,9 +7,11 @@ package mx.itson.citamedica.ui;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import mx.itson.citamedica.entities.Cita;
 import mx.itson.citamedica.entities.Especialidad;
 import mx.itson.citamedica.entities.Medico;
 import mx.itson.citamedica.entities.Paciente;
+import mx.itson.citamedica.persistence.CitaDAO;
 import mx.itson.citamedica.persistence.EspecialidadDAO;
 import mx.itson.citamedica.persistence.Medico_especialidadDAO;
 import mx.itson.citamedica.persistence.PacienteDAO;
@@ -77,6 +79,7 @@ public class CitaForm extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         cmbPaciente = new javax.swing.JComboBox<>();
         cmbMedico = new javax.swing.JComboBox<>();
         cmbEspecialidad = new javax.swing.JComboBox<>();
@@ -85,6 +88,7 @@ public class CitaForm extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         btnAceptar = new javax.swing.JButton();
+        jDateChooser2 = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -119,28 +123,28 @@ public class CitaForm extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(cmbPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(332, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(255, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnAceptar)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel2)
                         .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(66, 66, 66))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(cmbPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
+                            .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,14 +165,68 @@ public class CitaForm extends javax.swing.JDialog {
                     .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(104, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        // TODO add your handling code here:
+    try {
+        // 1. Obtener paciente
+        String pacienteSeleccionado = (String) cmbPaciente.getSelectedItem();
+        if (pacienteSeleccionado == null || pacienteSeleccionado.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor selecciona un paciente.");
+            return;
+        }
+        int idPaciente = Integer.parseInt(pacienteSeleccionado.split("-")[0].trim());
+        Paciente paciente = PacienteDAO.getById(idPaciente);
+
+        // 2. Obtener médico
+        Medico medico = (Medico) cmbMedico.getSelectedItem();
+        if (medico == null) {
+            JOptionPane.showMessageDialog(this, "Por favor selecciona un médico.");
+            return;
+        }
+
+        // 3. Obtener especialidad
+        Especialidad especialidad = (Especialidad) cmbEspecialidad.getSelectedItem();
+        if (especialidad == null) {
+            JOptionPane.showMessageDialog(this, "Por favor selecciona una especialidad.");
+            return;
+        }
+
+        // 4. Obtener fecha
+        java.util.Date fechaSeleccionada = jDateChooser2.getDate();
+        if (fechaSeleccionada == null) {
+            JOptionPane.showMessageDialog(this, "Por favor selecciona una fecha.");
+            return;
+        }
+        java.sql.Date fechaSQL = new java.sql.Date(fechaSeleccionada.getTime());
+
+        // 5. Crear nueva cita
+        Cita nuevaCita = new Cita();
+        nuevaCita.setPaciente(paciente);
+        nuevaCita.setMedico(medico);
+        nuevaCita.setEspecialidad(especialidad); 
+        nuevaCita.setFecha(fechaSQL);
+
+        // 6. Guardar cita
+        boolean resultado = CitaDAO.save(nuevaCita);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "¡Cita agendada con éxito!");
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al agendar la cita.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Ocurrió un error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void cmbEspecialidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEspecialidadActionPerformed
@@ -226,6 +284,8 @@ public class CitaForm extends javax.swing.JDialog {
     private javax.swing.JComboBox<Especialidad> cmbEspecialidad;
     private javax.swing.JComboBox<Medico> cmbMedico;
     private javax.swing.JComboBox<String> cmbPaciente;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
