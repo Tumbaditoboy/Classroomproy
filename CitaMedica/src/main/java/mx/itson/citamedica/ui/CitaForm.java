@@ -4,6 +4,7 @@
  */
 package mx.itson.citamedica.ui;
 
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -80,6 +81,7 @@ public class CitaForm extends javax.swing.JDialog {
     private void initComponents() {
 
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jSpinner1 = new javax.swing.JSpinner();
         cmbPaciente = new javax.swing.JComboBox<>();
         cmbMedico = new javax.swing.JComboBox<>();
         cmbEspecialidad = new javax.swing.JComboBox<>();
@@ -89,6 +91,8 @@ public class CitaForm extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         btnAceptar = new javax.swing.JButton();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        spinnerHora = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -119,6 +123,11 @@ public class CitaForm extends javax.swing.JDialog {
             }
         });
 
+        spinnerHora.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, null, java.util.Calendar.HOUR_OF_DAY));
+        spinnerHora.setEditor(new javax.swing.JSpinner.DateEditor(spinnerHora, "hh:mm a"));
+
+        jLabel5.setText("Hora:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -129,7 +138,8 @@ public class CitaForm extends javax.swing.JDialog {
                     .addComponent(btnAceptar)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel2)
-                        .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(spinnerHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(66, 66, 66))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,12 +148,16 @@ public class CitaForm extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(cmbPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
                             .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
+                        .addComponent(jLabel4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(86, 86, 86)
+                .addComponent(jLabel5)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -163,11 +177,16 @@ public class CitaForm extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spinnerHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(101, Short.MAX_VALUE))
         );
 
         pack();
@@ -175,7 +194,7 @@ public class CitaForm extends javax.swing.JDialog {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
     try {
-        // 1. Obtener paciente
+        // Obtener paciente
         String pacienteSeleccionado = (String) cmbPaciente.getSelectedItem();
         if (pacienteSeleccionado == null || pacienteSeleccionado.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor selecciona un paciente.");
@@ -184,36 +203,68 @@ public class CitaForm extends javax.swing.JDialog {
         int idPaciente = Integer.parseInt(pacienteSeleccionado.split("-")[0].trim());
         Paciente paciente = PacienteDAO.getById(idPaciente);
 
-        // 2. Obtener médico
+        // Obtener médico
         Medico medico = (Medico) cmbMedico.getSelectedItem();
         if (medico == null) {
             JOptionPane.showMessageDialog(this, "Por favor selecciona un médico.");
             return;
         }
 
-        // 3. Obtener especialidad
+        // Obtener especialidad
         Especialidad especialidad = (Especialidad) cmbEspecialidad.getSelectedItem();
         if (especialidad == null) {
             JOptionPane.showMessageDialog(this, "Por favor selecciona una especialidad.");
             return;
         }
 
-        // 4. Obtener fecha
+        // Obtener fecha
         java.util.Date fechaSeleccionada = jDateChooser2.getDate();
         if (fechaSeleccionada == null) {
             JOptionPane.showMessageDialog(this, "Por favor selecciona una fecha.");
             return;
         }
-        java.sql.Date fechaSQL = new java.sql.Date(fechaSeleccionada.getTime());
 
-        // 5. Crear nueva cita
+        // Obtener hora del JSpinner
+        java.util.Date horaSeleccionada = (java.util.Date) spinnerHora.getValue(); 
+
+        // Combinar fecha y hora
+        Calendar fechaCalendar = Calendar.getInstance();
+        fechaCalendar.setTime(fechaSeleccionada);
+
+        Calendar horaCalendar = Calendar.getInstance();
+        horaCalendar.setTime(horaSeleccionada);
+
+        fechaCalendar.set(Calendar.HOUR_OF_DAY, horaCalendar.get(Calendar.HOUR_OF_DAY));
+        fechaCalendar.set(Calendar.MINUTE, horaCalendar.get(Calendar.MINUTE));
+        fechaCalendar.set(Calendar.SECOND, 0);
+        fechaCalendar.set(Calendar.MILLISECOND, 0);
+
+        java.util.Date fechaFinal = fechaCalendar.getTime(); // La fecha y hora combinadas
+
+        // Verificar que no haya una cita en la misma fecha y hora
+        List<Cita> citasExistentes = CitaDAO.getAll();
+        boolean existeCita = false;
+
+        for (Cita cita : citasExistentes) {
+            if (cita.getFecha().compareTo(fechaFinal) == 0) {
+                existeCita = true;
+                break;
+            }
+        }
+
+        if (existeCita) {
+            JOptionPane.showMessageDialog(this, "Ya existe una cita agendada en esa fecha y hora.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Crear nueva cita
         Cita nuevaCita = new Cita();
         nuevaCita.setPaciente(paciente);
         nuevaCita.setMedico(medico);
         nuevaCita.setEspecialidad(especialidad); 
-        nuevaCita.setFecha(fechaSQL);
+        nuevaCita.setFecha(fechaFinal);
 
-        // 6. Guardar cita
+        // Guardar cita
         boolean resultado = CitaDAO.save(nuevaCita);
 
         if (resultado) {
@@ -290,5 +341,8 @@ public class CitaForm extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner spinnerHora;
     // End of variables declaration//GEN-END:variables
 }
