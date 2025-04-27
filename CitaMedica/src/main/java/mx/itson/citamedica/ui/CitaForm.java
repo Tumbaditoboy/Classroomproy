@@ -5,9 +5,13 @@
 package mx.itson.citamedica.ui;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
 import mx.itson.citamedica.entities.Cita;
 import mx.itson.citamedica.entities.Especialidad;
 import mx.itson.citamedica.entities.Medico;
@@ -30,9 +34,14 @@ public class CitaForm extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-    cmbPaciente.setModel(new javax.swing.DefaultComboBoxModel());
+    cmbPaciente.setModel(new javax.swing.DefaultComboBoxModel());  
 
-    
+// Obtener el campo de texto
+JFormattedTextField tf = ((JSpinner.DateEditor) spinnerHora.getEditor()).getTextField();
+
+// Bloquear edición manual
+tf.setEditable(false);
+
     // Llenar los JComboBox con cadenas en formato "ID - Texto"
     try {
         List pacientes = PacienteDAO.getAll();
@@ -123,8 +132,9 @@ public class CitaForm extends javax.swing.JDialog {
             }
         });
 
-        spinnerHora.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, null, java.util.Calendar.HOUR_OF_DAY));
-        spinnerHora.setEditor(new javax.swing.JSpinner.DateEditor(spinnerHora, "hh:mm a"));
+        spinnerHora.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(1745784000000L), null, null, java.util.Calendar.HOUR_OF_DAY));
+        spinnerHora.setEditor(new javax.swing.JSpinner.DateEditor(spinnerHora, "hh a"));
+        spinnerHora.setFocusable(false);
 
         jLabel5.setText("Hora:");
 
@@ -180,9 +190,9 @@ public class CitaForm extends javax.swing.JDialog {
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(spinnerHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -235,22 +245,31 @@ public class CitaForm extends javax.swing.JDialog {
         horaCalendar.setTime(horaSeleccionada);
 
         fechaCalendar.set(Calendar.HOUR_OF_DAY, horaCalendar.get(Calendar.HOUR_OF_DAY));
-        fechaCalendar.set(Calendar.MINUTE, horaCalendar.get(Calendar.MINUTE));
+        fechaCalendar.set(Calendar.MINUTE, 0); // <--- Minutos a cero
         fechaCalendar.set(Calendar.SECOND, 0);
         fechaCalendar.set(Calendar.MILLISECOND, 0);
 
-        java.util.Date fechaFinal = fechaCalendar.getTime(); // La fecha y hora combinadas
+        java.util.Date fechaFinal = fechaCalendar.getTime(); // Fecha y hora combinadas (sin minutos)
+       
 
         // Verificar que no haya una cita en la misma fecha y hora
         List<Cita> citasExistentes = CitaDAO.getAll();
         boolean existeCita = false;
 
         for (Cita cita : citasExistentes) {
-            if (cita.getFecha().compareTo(fechaFinal) == 0) {
-                existeCita = true;
-                break;
-            }
+        Calendar citaCalendar = Calendar.getInstance();
+        citaCalendar.setTime(cita.getFecha());
+        citaCalendar.set(Calendar.MINUTE, 0); // <--- También normalizamos la cita existente
+        citaCalendar.set(Calendar.SECOND, 0);
+        citaCalendar.set(Calendar.MILLISECOND, 0);
+
+        java.util.Date fechaCita = citaCalendar.getTime();
+
+        if (fechaCita.compareTo(fechaFinal) == 0) {
+            existeCita = true;
+            break;
         }
+    }
 
         if (existeCita) {
             JOptionPane.showMessageDialog(this, "Ya existe una cita agendada en esa fecha y hora.", "Error", JOptionPane.ERROR_MESSAGE);
