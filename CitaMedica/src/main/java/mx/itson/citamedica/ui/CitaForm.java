@@ -4,6 +4,8 @@
  */
 package mx.itson.citamedica.ui;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -102,6 +104,7 @@ tf.setEditable(false);
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
         spinnerHora = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
+        btnCalendly = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -138,19 +141,17 @@ tf.setEditable(false);
 
         jLabel5.setText("Hora:");
 
+        btnCalendly.setText("Calendly");
+        btnCalendly.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalendlyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(255, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnAceptar)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2)
-                        .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(spinnerHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(66, 66, 66))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -168,7 +169,21 @@ tf.setEditable(false);
                         .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(86, 86, 86)
                 .addComponent(jLabel5)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(167, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnAceptar)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addComponent(cmbMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(spinnerHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnCalendly)
+                        .addGap(160, 160, 160))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,7 +211,9 @@ tf.setEditable(false);
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(spinnerHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(btnCalendly)
+                .addGap(45, 45, 45))
         );
 
         pack();
@@ -307,6 +324,25 @@ tf.setEditable(false);
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbPacienteActionPerformed
 
+    private void btnCalendlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendlyActionPerformed
+
+    try {
+        String url = "https://calendly.com/dzlann13x"; // ← Reemplaza con tu URL de Calendly
+
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(new URI(url));
+        } else {
+            JOptionPane.showMessageDialog(this, "Tu sistema no soporta esta función.");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir Calendly: " + e.getMessage());
+        e.printStackTrace();
+    }
+
+
+    }//GEN-LAST:event_btnCalendlyActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -351,6 +387,7 @@ tf.setEditable(false);
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnCalendly;
     private javax.swing.JComboBox<Especialidad> cmbEspecialidad;
     private javax.swing.JComboBox<Medico> cmbMedico;
     private javax.swing.JComboBox<String> cmbPaciente;
