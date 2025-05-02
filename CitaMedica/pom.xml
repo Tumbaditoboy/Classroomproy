@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <exec.mainClass>mx.itson.citamedica.CitaMedica</exec.mainClass>
+        <exec.mainClass>mx.itson.citamedica.utils.CitaMedica</exec.mainClass>
     </properties>
      <dependencies>
         <dependency>
@@ -34,4 +34,20 @@
     <version>1.4</version>
 </dependency>
     </dependencies>
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.3.0</version>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <mainClass>mx.itson.citamedica.utils.CitaMedica</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 </project>
